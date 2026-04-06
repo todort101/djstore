@@ -21,12 +21,12 @@ $cartCount = getCartCount();
         html, body { background: #0a0a0a !important; color: #f5f5f0 !important; min-height: 100vh; }
 
         .legal-page {
-            padding: 60px 0 100px;
+            padding: 0px 0 100px;
         }
         .legal-header {
-            padding: 60px 0;
+            padding: 40px 0 24px;
             border-bottom: 1px solid var(--dark-4);
-            margin-bottom: 60px;
+            margin-bottom: 32px;
         }
         .legal-label {
             display: inline-block;
