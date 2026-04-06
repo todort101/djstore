@@ -1,5 +1,10 @@
-
+<?php
 // config/database.php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
@@ -12,7 +17,7 @@ define('UPLOAD_URL', SITE_URL . '/admin/uploads/');
 
 // ── Stripe ───────────────────────────────────────────────────
 define('STRIPE_PUBLIC_KEY', 'pk_test_51TCftJGzcgo9XMAnTWfg0LbBSDdD7EX3gzHQf19kQZcmE3o4vRr1EdR7CYBLOMlo5mBxD9ErMJkHVZrgWCSjKBWl00Tgj7VDs0');
-define('STRIPE_SECRET_KEY', 'STRIPE_SECRET_FROM_ENV';
+define('STRIPE_SECRET_KEY', $_ENV['STRIPE_SECRET_KEY']);
 define('STRIPE_CURRENCY',   'eur');
 
 function getDB() {
