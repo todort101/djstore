@@ -19,8 +19,8 @@ $cartCount = getCartCount();
     <link rel="stylesheet" href="<?= SITE_URL ?>/assets/css/style.css">
     <style>
         html, body { background: #0a0a0a !important; color: #f5f5f0 !important; min-height: 100vh; }
-        .legal-page { padding: 60px 0 100px; }
-        .legal-header { padding: 60px 0; border-bottom: 1px solid var(--dark-4); margin-bottom: 60px; }
+        .legal-page { padding: 0px 0 100px; }
+        .legal-header { padding: 40px 0 24px; border-bottom: 1px solid var(--dark-4); margin-bottom: 32px; }
         .legal-label {
             display: inline-block;
             font-family: var(--font-condensed);
