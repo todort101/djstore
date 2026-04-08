@@ -206,7 +206,7 @@ $cartCount   = getCartCount();
 
 <main class="page-section">
     <div class="container">
-        <h1 class="page-title">КОШНИЦА</h1>
+        <h1 class="page-title"></h1>
 
         <?php showFlash(); ?>
 
