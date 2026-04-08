@@ -63,7 +63,7 @@ $cartCount = getCartCount();
 
 <main class="page-section">
     <div class="container" style="max-width:680px">
-        <h1 class="page-title">МОЯ ПРОФИЛ</h1>
+        
 
         <?php showFlash(); ?>
         <?php if ($error): ?>
