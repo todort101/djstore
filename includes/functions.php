@@ -187,11 +187,11 @@ function getOrderItems(int $orderId): array {
 
 function getOrderStatus(string $status): string {
     return match($status) {
-        'pending'    => '⏳ Изчакваща',
-        'processing' => '🔧 В обработка',
-        'shipped'    => '🚚 Изпратена',
-        'delivered'  => '✅ Доставена',
-        'cancelled'  => '❌ Отказана',
+        'pending'    => 'Изчакваща',
+        'processing' => 'В обработка',
+        'shipped'    => 'Изпратена',
+        'delivered'  => 'Доставена',
+        'cancelled'  => 'Отказана',
         default      => $status,
     };
 }
