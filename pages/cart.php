@@ -204,7 +204,7 @@ $cartCount   = getCartCount();
 <body>
 <?php include $root . '/includes/header.php'; ?>
 
-<main class="page-section">
+<main class="page-section" style="display:flex;align-items:center;justify-content:center;">
     <div class="container">
 
         <?php showFlash(); ?>
