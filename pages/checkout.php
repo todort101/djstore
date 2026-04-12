@@ -290,14 +290,6 @@ $cartCount = getCartCount();
                         <div id="payment-message"></div>
                         <div id="payment-element"></div>
 
-                        <div class="payment-methods-icons">
-                            <span>VISA</span>
-                            <span>Mastercard</span>
-                            <span>American Express</span>
-                            <span>Apple Pay</span>
-                            <span>Google Pay</span>
-                        </div>
-
                         <button id="submit-btn"
                                 class="btn btn--primary btn--full"
                                 style="margin-top:20px;padding:16px;font-size:1.1rem;">

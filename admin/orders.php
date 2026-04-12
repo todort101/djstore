@@ -12,17 +12,59 @@ requireAdmin();
 $db = getDB();
 
 // ── Смяна на статус ────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
-    $oid    = (int)$_POST['order_id'];
-    $status = $_POST['status'] ?? '';
-    $allowed = ['pending','processing','shipped','delivered','cancelled'];
-    if (in_array($status, $allowed)) {
-        $stmt = $db->prepare("UPDATE orders SET status=? WHERE id=?");
-        $stmt->bind_param('si', $status, $oid);
-        $stmt->execute();
-        setFlash('success', "Статусът на поръчка #{$oid} е обновен.");
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
+    $orderId   = (int)$_POST['order_id'];
+    $newStatus = $_POST['status'];
+
+    // Вземи текущия статус преди смяната
+    $curr = $db->prepare("SELECT status FROM orders WHERE id=?");
+    $curr->bind_param('i', $orderId);
+    $curr->execute();
+    $oldStatus = $curr->get_result()->fetch_assoc()['status'] ?? '';
+
+    // Смени статуса
+    $stmt = $db->prepare("UPDATE orders SET status=? WHERE id=?");
+    $stmt->bind_param('si', $newStatus, $orderId);
+    $stmt->execute();
+
+    // Ако се отказва поръчка — върни наличността
+    if ($newStatus === 'cancelled' && $oldStatus !== 'cancelled') {
+        $items = $db->prepare(
+            "SELECT product_id, quantity FROM order_items WHERE order_id=?"
+        );
+        $items->bind_param('i', $orderId);
+        $items->execute();
+        $orderItems = $items->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($orderItems as $item) {
+            $upd = $db->prepare(
+                "UPDATE products SET stock = stock + ? WHERE id=?"
+            );
+            $upd->bind_param('ii', $item['quantity'], $item['product_id']);
+            $upd->execute();
+        }
     }
-    header('Location: ' . SITE_URL . '/admin/orders.php' . (isset($_GET['id']) ? '?id='.(int)$_GET['id'] : ''));
+
+    // Ако се възстановява от отказана — намали наличността обратно
+    if ($oldStatus === 'cancelled' && $newStatus !== 'cancelled') {
+        $items = $db->prepare(
+            "SELECT product_id, quantity FROM order_items WHERE order_id=?"
+        );
+        $items->bind_param('i', $orderId);
+        $items->execute();
+        $orderItems = $items->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($orderItems as $item) {
+            $upd = $db->prepare(
+                "UPDATE products SET stock = stock - ? WHERE id=?"
+            );
+            $upd->bind_param('ii', $item['quantity'], $item['product_id']);
+            $upd->execute();
+        }
+    }
+
+    setFlash('success', 'Статусът е обновен.');
+    header('Location: ' . SITE_URL . '/admin/orders.php');
     exit;
 }
 

@@ -55,9 +55,11 @@ $ordersByStatus = $db->query(
     "SELECT status, COUNT(*) AS cnt FROM orders GROUP BY status"
 )->fetch_all(MYSQLI_ASSOC);
 
-$statusLabels = [];
-$statusData   = [];
-$statusColors = [
+$statusLabels  = [];
+$statusData    = [];
+$statusBgColors = [];
+$statusBdColors = [];
+$statusColorMap = [
     'pending'    => '#ffaa00',
     'processing' => '#44aaff',
     'shipped'    => '#cc88ff',
@@ -65,8 +67,11 @@ $statusColors = [
     'cancelled'  => '#ff4444',
 ];
 foreach ($ordersByStatus as $row) {
-    $statusLabels[] = getOrderStatus($row['status']);
-    $statusData[]   = (int)$row['cnt'];
+    $statusLabels[]   = getOrderStatus($row['status']);
+    $statusData[]     = (int)$row['cnt'];
+    $color            = $statusColorMap[$row['status']] ?? '#e8ff00';
+    $statusBgColors[] = $color . 'cc';
+    $statusBdColors[] = $color;
 }
 
 // ── Топ 5 продукти по продажби ─────────────────────────────────
@@ -662,11 +667,11 @@ function showDataset(type) {
 const statusCtx = document.getElementById('statusChart').getContext('2d');
 
 const statusColorMap = {
-    '⏳ Изчакваща': ORANGE,
-    '🔧 В обработка': BLUE,
-    '🚚 Изпратена': PURPLE,
-    '✅ Доставена': GREEN,
-    '❌ Отказана': RED,
+    'ИЗЧАКВАЩА': ORANGE,
+    'В ОБРАБОТКА': BLUE,
+    'ИЗПРАТЕНА': PURPLE,
+    'ДОСТАВЕНА': GREEN,
+    'ОТКАЗАНА': RED,
 };
 
 new Chart(statusCtx, {
@@ -675,8 +680,8 @@ new Chart(statusCtx, {
         labels: statusLabels,
         datasets: [{
             data:            statusData,
-            backgroundColor: statusLabels.map(l => (statusColorMap[l] || ACCENT) + 'cc'),
-            borderColor:     statusLabels.map(l => statusColorMap[l] || ACCENT),
+            backgroundColor: <?= json_encode($statusBgColors) ?>,
+            borderColor:     <?= json_encode($statusBdColors) ?>,
             borderWidth:     2,
             hoverOffset:     8,
         }]

@@ -28,10 +28,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
 
         case 'update':
-            $qty = (int)($_POST['quantity'] ?? 0);
-            updateCart($productId, $qty);
-            header('Location: ' . SITE_URL . '/pages/cart.php');
-            exit;
+    $qty  = (int)($_POST['quantity'] ?? 0);
+    $db   = getDB();
+    $stmt = $db->prepare("SELECT stock FROM products WHERE id = ? AND is_active = 1");
+    $stmt->bind_param('i', $productId);
+    $stmt->execute();
+    $row  = $stmt->get_result()->fetch_assoc();
+    $stock = $row ? (int)$row['stock'] : 0;
+
+    if ($qty > $stock) {
+        $qty = $stock;
+        setFlash('warning', 'Наличността е само ' . $stock . ' бр. Количеството е коригирано.');
+    }
+
+    updateCart($productId, $qty);
+    header('Location: ' . SITE_URL . '/pages/cart.php');
+    exit;
 
         case 'remove':
             removeFromCart($productId);
@@ -256,11 +268,11 @@ $cartCount   = getCartCount();
                                     <input type="hidden" name="action"     value="update">
                                     <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                                     <input type="number"
-                                           name="quantity"
-                                           value="<?= $item['quantity'] ?>"
-                                           min="0"
-                                           max="<?= $p['stock'] ?>"
-                                           class="cart-qty-input">
+       name="quantity"
+       value="<?= $item['quantity'] ?>"
+       min="1"
+       max="<?= $item['stock'] ?>"
+       class="cart-qty-input">
                                 </form>
                             </td>
                             <td class="cart-price"><?= formatPrice($item['subtotal']) ?></td>
